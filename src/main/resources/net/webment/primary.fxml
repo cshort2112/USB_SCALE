@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="648.0" prefWidth="1152.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.webment.PrimaryController">
+   <children>
+      <VBox alignment="CENTER" prefHeight="648.0" prefWidth="1152.0">
+         <children>
+            <Label fx:id="current_Weight_Lbl" text="Current Weight:">
+               <font>
+                  <Font name="System Bold" size="48.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="75.0" />
+               </VBox.margin>
+            </Label>
+            <HBox fx:id="weight_Background" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0">
+               <children>
+                  <Label fx:id="current_Weight_Display" text="0.0" textAlignment="CENTER">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="48.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="pounds_Lbl" alignment="CENTER" text="Pounds" textAlignment="CENTER">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="48.0" />
+                     </font>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="75.0" />
+               </VBox.margin>
+            </HBox>
+            <Button fx:id="btn_Confirm" mnemonicParsing="false" onAction="#on_Action_Confirm" prefHeight="85.0" prefWidth="922.0" style="-fx-background-radius: 10; -fx-background-color: #5E5CE6;" text="Confirm" textFill="WHITE">
+               <font>
+                  <Font size="32.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
