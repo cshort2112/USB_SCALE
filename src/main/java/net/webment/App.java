@@ -39,35 +39,5 @@ public class App extends Application {
         launch();
     }
 
-    public static void create_File(String Weight) {
-        //Use Paths.get in older JVM's
-        Path f = Path.of(System.getProperty("user.home"), "Documents", "Weight.txt");
-        try {
-            Files.writeString(f, Weight, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-            String written = Files.readString(f);
-            if (written.equals(Weight)) {
-                System.exit(0);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
-    }
-
-
-    public static void create_Error(String error) {
-        //Use Paths.get in older JVM's
-        Path f = Path.of(System.getProperty("user.home"), "Documents", "Error.txt");
-        try {
-            Files.writeString(f, error, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
-            String written = Files.readString(f);
-            if (written.equals(error)) {
-                System.exit(0);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
-    }
 
 }

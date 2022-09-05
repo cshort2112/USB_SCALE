@@ -9,6 +9,8 @@ import javax.usb.event.UsbPipeListener;
 import java.util.List;
 
 public class UsbScale implements UsbPipeListener, AutoCloseable {
+
+
     private boolean isOpened = false;
     private final UsbDevice device;
     private UsbInterface iface;
@@ -16,6 +18,10 @@ public class UsbScale implements UsbPipeListener, AutoCloseable {
     private final byte[] data = new byte[6];
     private double finalWeight;
     private Context context;
+
+    public boolean isOpened() {
+        return isOpened;
+    }
 
     private UsbScale(UsbDevice device) {
         this.device = device;
@@ -29,7 +35,7 @@ public class UsbScale implements UsbPipeListener, AutoCloseable {
             services = UsbHostManager.getUsbServices();
             rootHub = services.getRootUsbHub();
         } catch (UsbException e) {
-            App.create_Error("Error! " + e.getMessage());
+            PrimaryController.create_Error("Error! " + e.getMessage());
         }
         // Dymo S100 Scale:
         assert rootHub != null;
@@ -93,7 +99,6 @@ public class UsbScale implements UsbPipeListener, AutoCloseable {
 
     public void open()  {
         try {
-            isOpened = true;
             context = new Context();
             UsbConfiguration configuration = device.getActiveUsbConfiguration();
             iface = configuration.getUsbInterface((byte) 0);
@@ -108,8 +113,9 @@ public class UsbScale implements UsbPipeListener, AutoCloseable {
             pipe = endpoints.get(0).getUsbPipe(); // there is only 1 endpoint
             pipe.addUsbPipeListener(this);
             pipe.open();
+            isOpened = true;
         }catch (UsbException e) {
-            App.create_Error("Error! "+ e.getMessage());
+            PrimaryController.create_Error("Error! "+ e.getMessage());
         }
 
 
@@ -122,15 +128,17 @@ public class UsbScale implements UsbPipeListener, AutoCloseable {
             iface.release();
             LibUsb.exit(context);
         } catch (UsbException e) {
-            App.create_Error("Error! "+ e.getMessage());
+            PrimaryController.create_Error("Error! "+ e.getMessage());
         }
     }
 
     public double syncSubmit() {
         try {
             pipe.syncSubmit(data);
+        } catch (UsbDisconnectedException disconnectedException) {
+            PrimaryController.create_Error("UsbDisconnectedException! "+ disconnectedException.getMessage());
         } catch (UsbException e) {
-            App.create_Error("Error! "+ e.getMessage());
+            PrimaryController.create_Error("Error! "+ e.getMessage());
         }
         return finalWeight;
     }
@@ -141,11 +149,18 @@ public class UsbScale implements UsbPipeListener, AutoCloseable {
         //System.out.println(data[1] + ", " + data[2] + ", " + data[3] + ", " + data[4] + ", " + data[5]);
         //if data[1] == 4 value is stable, if data[1] == 3 value is unstable, if data[1] == 5 value is negative, if data[1] == 2 value is 0
         if (data[2] == 12) { //This means it is in imperial Mode
-            if (data[1] == 4 || data[1]== 3) {
+            if (data[1] == 4) {
+                PrimaryController.setStable(1);
+                int weight = (data[4] & 0xFF) + (data[5] << 8);
+                int scalingFactor = data[3];
+                finalWeight = scaleWeight(weight, scalingFactor); //final weight, applies to both metric and imperial
+            } else if (data[1]== 3) {
+                PrimaryController.setStable(0);
                 int weight = (data[4] & 0xFF) + (data[5] << 8);
                 int scalingFactor = data[3];
                 finalWeight = scaleWeight(weight, scalingFactor); //final weight, applies to both metric and imperial
             } else if (data[1] == 5) {
+                PrimaryController.setStable(-1);
                 int weight = (data[4] & 0xFF) + (data[5] << 8);
                 int scalingFactor = data[3];
                 finalWeight = scaleWeight(weight, scalingFactor) * (-1); //final weight, applies to both metric and imperial
@@ -153,11 +168,18 @@ public class UsbScale implements UsbPipeListener, AutoCloseable {
                 finalWeight = 0;
             }
         } else { //This would mean it is in metric
-            if (data[1] == 4 || data[1]== 3) {
+            if (data[1] == 4) {
+                PrimaryController.setStable(1);
+                int weight = (data[4] & 0xFF) + (data[5] << 8);
+                int scalingFactor = data[3];
+                finalWeight = scaleWeight(weight, scalingFactor); //final weight, applies to both metric and imperial
+            }else if (data[1]== 3) {
+                PrimaryController.setStable(0);
                 int weight = (data[4] & 0xFF) + (data[5] << 8);
                 int scalingFactor = data[3];
                 finalWeight = (scaleWeight(weight, scalingFactor) * 2.20462); //final weight, applies to both metric and imperial
             } else if (data[1] == 5) {
+                PrimaryController.setStable(-1);
                 int weight = (data[4] & 0xFF) + (data[5] << 8);
                 int scalingFactor = data[3];
                 finalWeight = (scaleWeight(weight, scalingFactor) * 2.20462) * (-1); //final weight, applies to both metric and imperial
@@ -175,6 +197,6 @@ public class UsbScale implements UsbPipeListener, AutoCloseable {
 
     @Override
     public void errorEventOccurred(UsbPipeErrorEvent usbPipeErrorEvent) {
-        App.create_Error(usbPipeErrorEvent.toString());
+        PrimaryController.create_Error("UsbPipeErrorEvent! " + usbPipeErrorEvent.toString());
     }
 }
