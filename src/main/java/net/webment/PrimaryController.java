@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -18,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class PrimaryController implements Initializable {
     private static int response = 1;
@@ -90,13 +92,13 @@ public class PrimaryController implements Initializable {
                 Stage stage = (Stage) btn_Confirm.getScene().getWindow();
                 // do what you have to do
                 stage.close();
-                System.exit(0);
             }
         } else {
             Alert error = new Alert(Alert.AlertType.ERROR, "You Cannot Confirm the Weight While until the Background is Green!");
             error.showAndWait();
         }
     }
+
 
     public static void create_File(String Weight) {
         //Use Paths.get in older JVM's
@@ -109,7 +111,6 @@ public class PrimaryController implements Initializable {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.exit(0);
         }
     }
 
