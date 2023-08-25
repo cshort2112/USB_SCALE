@@ -6,8 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Dymo_S100" />
         <module name="Interface" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Dymo_S100" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>

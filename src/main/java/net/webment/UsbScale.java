@@ -66,6 +66,7 @@ public class UsbScale implements UsbPipeListener, AutoCloseable {
         return null;
     }
 
+    /***/
     public Device findDevice(short vendorId, short productId)
     {
         int result = LibUsb.init(context);

@@ -3,7 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.webment</groupId>
   <artifactId>Interface</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <name>Dymo_S100</name>
+  <version>2.3.0</version>
   <build>
     <finalName>Dymo_S100</finalName>
     <plugins>
@@ -37,11 +38,25 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <transformers>
-                <transformer>
-                  <mainClass>net.webment.Main</mainClass>
-                </transformer>
-              </transformers>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <includes>
+                    <include>META-INF/LICENSE.txt</include>
+                    <include>META-INF/DEPENDENCIES</include>
+                    <include>META-INF/NOTICE</include>
+                    <include>META-INF/NOTICE.txt</include>
+                    <include>META-INF/MANIFEST.MF</include>
+                    <include>META-INF/plexus/components.xml</include>
+                    <include>META-INF/maven/commons-io/commons-io/pom.properties</include>
+                    <include>META-INF/maven/commons-io/commons-io/pom.xml</include>
+                    <include>META-INF/substrate/config/*</include>
+                  </includes>
+                  <excludes>
+                    <exclude>**</exclude>
+                  </excludes>
+                </filter>
+              </filters>
             </configuration>
           </execution>
         </executions>
